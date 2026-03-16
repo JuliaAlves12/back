@@ -45,6 +45,10 @@ export default function Login(){
                 return
             }
 
+            if (is_staff){
+                
+            }
+
 
         } catch (error) {
             console.log("Error: ", error);

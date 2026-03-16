@@ -38,6 +38,7 @@ export default function HomeAdmin() {
 
     return (
         <div>
+            <h1>Página Administrador</h1>
             <h2>Lista de Usuários</h2>
             {/*Tabela principal */}
             <table border="1" cellPadding="6" style={{ width: "100%" }}>
