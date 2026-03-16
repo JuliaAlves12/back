@@ -46,7 +46,9 @@ export default function Login(){
             }
 
             if (is_staff){
-                
+                navigate("admin/home")
+            }else{
+                navigate("user/home")
             }
 
 
