@@ -7,16 +7,17 @@ export default function Login(){
     const [user, setUser] = useState('')
     const [password, setPassword] = useState('')
     const [message, setMessage] = useState('')
+    const [loading, setLoading] = useState(false)
 
     const navigate = useNavigate()
 
-    const logar = async ()=>{
-        console.log("user", user);
-        console.log("password", password);
+    const logar = async (e)=>{
+        e.preventDefault()
+        setMessage("")
+        setLoading(true)
         
         try {
-            const response = await axios.post(
-                'http://127.0.0.1:8000/api/token',
+            const response = await axios.post('http://127.0.0.1:8000/api/token',
                 {
                     username: user,
                     password: password
@@ -25,8 +26,15 @@ export default function Login(){
 
             localStorage.setItem('token', response.data.access)
             setMessage("Usuário logado")
-            navigate('/homeuser')
             
+            const me = await axios.get('http://127.0.0.1:8000/api/usuarios/me/',{
+                headers: {Authorization: `Bearer ${token}`}
+            })
+
+            const {is_superuser, is_staff, is_active}= me.data
+            
+
+
         } catch (error) {
             console.log("Error: ", error);
             setMessage("Usuário ou senha inválido...")
