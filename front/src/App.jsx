@@ -6,6 +6,7 @@ import PaymentsUser from './pages/user/payments'
 import ContractUser from './pages/user/contracts'
 import PropertiesUser from './pages/user/properties'
 
+import Admin from './pages/admin'
 import HomeAdmin from './pages/admin/home'
 import PaymentsAdmin from './pages/admin/payments'
 import ContractsAdmin from './pages/admin/contracts'
@@ -25,6 +26,7 @@ export default function App() {
         <Route path='/user/contracts' element={<ContractUser />} />
         <Route path='/user/properties' element={<PropertiesUser />} />
         
+        <Route path='/admin' element={<Admin />} />
         <Route path='/admin/home' element={<HomeAdmin />} />
         <Route path='/admin/payments' element={<PaymentsAdmin />} />
         <Route path='/admin/contracts' element={<ContractsAdmin />} />
