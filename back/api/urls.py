@@ -22,6 +22,3 @@ urlpatterns = [
     path('importar_imoveis/', importar_imoveis), 
     path('', include(router.urls))
 ]
-
-
-
