@@ -24,7 +24,7 @@ export default function App() {
         <Route path='/user/payments' element={<PaymentsUser />} />
         <Route path='/user/contracts' element={<ContractUser />} />
         <Route path='/user/properties' element={<PropertiesUser />} />
-        
+
         <Route path='/admin' element={<Admin />} />
         <Route path='/admin/home' element={<Admin />} />
         <Route path='/admin/payments' element={<PaymentsAdmin />} />

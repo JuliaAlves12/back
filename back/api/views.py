@@ -209,6 +209,7 @@ def importar_imoveis(request):
             status=status.HTTP_400_BAD_REQUEST
         )
     
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def importar_contratos(request):
@@ -221,7 +222,7 @@ def importar_contratos(request):
             )
     try:
         df = pd.read_excel(arquivo)
-        colunas_esperadas = ["data_inicio", "data_fim", "valor", "imovel_id", "locador_id", "locatario_id"]
+        colunas_esperadas = ["data_inicio",	"data_fim",	"valor", "imovel_id",	"locador_id",	"locatario_id"]
         for coluna in colunas_esperadas:
             if coluna not in df.columns:
                 return Response(
@@ -231,6 +232,8 @@ def importar_contratos(request):
         
         for _, row in df.iterrows():
             locador_id = int(row["locador_id"])
+            locatario_id = int(row["locatario_id"])
+            imovel_id = int(row["imovel_id"])
 
             if not Usuario.objects.filter(id=locador_id).exists():
                 return Response(
@@ -238,12 +241,24 @@ def importar_contratos(request):
                     status=status.HTTP_400_BAD_REQUEST
                     )
 
+            if not Usuario.objects.filter(id=locatario_id).exists():
+                return Response(
+                    {"detail":f"Locatario ID: {locatario_id} não existe..."},
+                    status=status.HTTP_400_BAD_REQUEST
+                    )
+
+            if not Imovel.objects.filter(id=imovel_id).exists():
+                return Response(
+                    {"detail": f"Imovel ID: {imovel_id} não existe..."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
             Contrato.objects.create(
                 data_inicio=row["data_inicio"],
                 data_fim=row["data_fim"],
-                valor=row["valor"],
+                valor=row["valor"], 
                 imovel_id=row["imovel_id"],
-                locador_id=row["locador_id"],
+                locador_id=row["locador_id"],	
                 locatario_id=row["locatario_id"]
             )  
         return Response(
@@ -258,6 +273,7 @@ def importar_contratos(request):
         )
     
 
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def importar_pagamentos(request):
@@ -270,7 +286,8 @@ def importar_pagamentos(request):
             )
     try:
         df = pd.read_excel(arquivo)
-        colunas_esperadas = ["data_pagamento", "valor", "status", "contrato_id"]
+        colunas_esperadas = ["data_pagamento",	"valor",	"status",	"contrato_id"]
+
         for coluna in colunas_esperadas:
             if coluna not in df.columns:
                 return Response(
@@ -279,20 +296,21 @@ def importar_pagamentos(request):
                 )
         
         for _, row in df.iterrows():
-            locador_id = int(row["locador_id"])
+            contrato_id = int(row["contrato_id"])
 
-            if not Usuario.objects.filter(id=locador_id).exists():
+            if not Contrato.objects.filter(id=contrato_id).exists():
                 return Response(
-                    {"detail":f"Locador ID: {locador_id} não existe..."},
+                    {"detail":f"Locador ID: {contrato_id} não existe..."},
                     status=status.HTTP_400_BAD_REQUEST
                     )
+            status_val = str(row["status"]).upper() in ['VERDADEIRO', 'TRUE', '1', 'YES']
 
             Pagamento.objects.create(
-                data_pagamento=row["data_pagamento"],
-                valor=row["valor"],
-                status=row["status"],
-                contrato_id=row["contrato_id"]
-            )  
+                data_pagamento=row["data_pagamento"],   
+                valor=row["valor"], 
+                status=status_val,   
+                contrato_id=contrato_id
+            ) 
         return Response(
             {"detail":"Importação concluida com sucesso..."},
             status=status.HTTP_201_CREATED
